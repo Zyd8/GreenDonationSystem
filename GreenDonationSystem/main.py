@@ -1,9 +1,13 @@
 import dbConnect
 from donation import Donation
 from trees import Trees
+from enums import *
 
-donation = dbConnect.insert_to_class("donation")
+dbConnect.initialize_trees()
+dbConnect.initialize_don()
 
-dbConnect.find_row("donation", 7)
+donation_list = dbConnect.insert_to_class(Table.DONATION)
+trees_list = dbConnect.insert_to_class(Table.TREES)
 
+dbConnect.alter_data(Table.TREES, 2, TreColumn.SPECIES, "Narra")
 

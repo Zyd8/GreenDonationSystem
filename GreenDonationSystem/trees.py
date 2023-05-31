@@ -7,6 +7,9 @@ class Trees(Donation):
         self.__species = species
         self.__quantity = quantity
 
+    def __repr__(self):
+        return f"Donation(donation_id={self.donation_id}, money={self.money}, tree_species={self.species}, tree_species_quantity={self.quantity})"
+
     @property 
     def species(self):
         return self.__species
@@ -19,7 +22,7 @@ class Trees(Donation):
     def quantity(self):
         return self.__quantity
     
-    @species.setter
+    @quantity.setter
     def quantity(self, value):
         self.__quantity = value
 
