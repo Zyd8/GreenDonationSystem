@@ -59,9 +59,9 @@ def insert_data(table, money=0, tree_species="", tree_species_quantity=0):
         c.execute("INSERT INTO trees VALUES (?, ?, ?)", (money, tree_species, tree_species_quantity))
     exit()
 
-def read_table(table):
+def read_table(table, base, order):
     enter()
-    list = c.execute(f"SELECT * FROM {table.value}")
+    list = c.execute(f"SELECT rowid, * FROM {table.value} ORDER BY {base.value} {order.value}")
     for item in list:
         print(item)
     exit()
@@ -87,4 +87,9 @@ def find_data(table, rowid):
 def alter_data(table, rowid, column, value):
     enter()
     c.execute(f"UPDATE {table.value} SET {column.value} = '{value}' WHERE rowid = {rowid}")
+    exit()
+
+def del_data(table, rowid):
+    enter()
+    c.execute(f"DELETE FROM {table.value} WHERE rowid = {rowid}")
     exit()
