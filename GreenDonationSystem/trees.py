@@ -1,6 +1,6 @@
-from donation import Donation
+from donations import Donations
 
-class Trees(Donation):
+class Trees(Donations):
     
     def __init__(self, donation_id=None, money=0, species="", quantity=0):
         super().__init__(donation_id, money)
@@ -8,7 +8,7 @@ class Trees(Donation):
         self.__quantity = quantity
 
     def __repr__(self):
-        return f"Donation(donation_id={self.donation_id}, money={self.money}, tree_species={self.species}, tree_species_quantity={self.quantity})"
+        return f"Trees(donation_id={self.donation_id}, money={self.money}, tree_species={self.species}, tree_species_quantity={self.quantity})"
 
     @property 
     def species(self):

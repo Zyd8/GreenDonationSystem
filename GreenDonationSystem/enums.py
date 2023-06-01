@@ -1,8 +1,14 @@
 from enum import Enum
 
 class Table(Enum):
-    DONATION = "donation"
+    ACCOUNTS = "accounts"
+    DONATIONS = "donations"
     TREES = "trees"
+    
+class AccColumn(Enum):
+    ROWID = "rowid"
+    EMAIL = "email"
+    PASSWORD = "password"
 
 class DonColumn(Enum):
     ROWID = "rowid"
