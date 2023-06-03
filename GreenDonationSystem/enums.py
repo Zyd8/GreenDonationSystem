@@ -6,16 +6,16 @@ class Table(Enum):
     TREES = "trees"
     
 class AccColumn(Enum):
-    ROWID = "rowid"
+    ID = "donor_id"
     EMAIL = "email"
     PASSWORD = "password"
 
 class DonColumn(Enum):
-    ROWID = "rowid"
+    ID = "donor_id"
     MONEY = "money"
 
 class TreColumn(Enum):
-    ROWID = "rowid"
+    ID = "donor_id"
     MONEY = "money"
     SPECIES = "tree_species"
     SPECIES_QUANTITY = "tree_species_quantity"
@@ -23,4 +23,4 @@ class TreColumn(Enum):
 class Order(Enum):
     ASCEND = "ASC"
     DESCEND = "DESC"
-    ROWID = "rowid"
+    ID = "donor_id"

@@ -1,23 +1,15 @@
-import dbConnect as db
+from accounts import Accounts
 from enums import *
 
-db.initialize_accounts()
-db.initialize_trees()
-db.initialize_donations()
+Accounts.init_db()
+# account = Accounts(Accounts.rand_num_gen(), "meowa", "434")
+# Accounts.insert_data(account)
 
-accounts_list = db.insert_to_class(Table.ACCOUNTS)
-donation_list = db.insert_to_class(Table.DONATIONS)
-trees_list = db.insert_to_class(Table.TREES)
 
-db.insert_data(Table.ACCOUNTS, email="a.com", password="76")
-db.insert_data(Table.DONATIONS, money=10)
-db.insert_data(Table.TREES, money=5, tree_species="oak")
+print(Accounts.find_data(2587))
 
-accounts_list = db.insert_to_class(Table.ACCOUNTS)
-donation_list = db.insert_to_class(Table.DONATIONS)
-trees_list = db.insert_to_class(Table.TREES)
+account = Accounts()
+account.alter_data(2587, AccColumn.PASSWORD, "oh no")
 
-print(accounts_list)
-print(trees_list)
-print(donation_list)
+print(Accounts.find_data(2587))
 

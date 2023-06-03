@@ -1,10 +1,27 @@
 import tkinter as tk
+from accounts import Accounts 
+from enums import *
 
-def confirm_button_clicked():
-    email = entry_email.get() 
-    password = entry_pass.get()  
-    print("Email:", email)
-    print("Password:", password)
+Accounts.init_db()
+
+current_user = None
+
+def confirm_button_clicked(): 
+    signal, id = Accounts.verify_account(entry_email.get(), entry_pass.get())
+    global current_user
+    if signal == "0":
+        label = tk.Label(root, text="Welcome!!", font=("Monospace", 12))
+        label.pack(padx=20, pady=20)
+        current_user = id
+        return
+    elif signal == "1":
+        label = tk.Label(root, text="Wrong password", font=("Monospace", 12))
+        label.pack(padx=20, pady=20)
+        return
+    else:
+        label = tk.Label(root, text="Account not found", font=("Monospace", 12))
+        label.pack(padx=20, pady=20)
+        return
 
 root = tk.Tk()
 

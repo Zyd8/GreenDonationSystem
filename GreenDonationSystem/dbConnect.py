@@ -45,23 +45,6 @@ def initialize_trees():
             )""")
     dbexit()
 
-def insert_to_class(table):
-    id = rand_num_gen()
-    dbenter()
-    object_list = []
-    c.execute(f"SELECT * FROM {table.value}")
-    for item in c.fetchall():
-        if table.value == Table.ACCOUNTS.value:
-            object = Accounts(id, item[1], item[2])
-            object_list.append(object)
-        elif table.value == Table.DONATIONS.value:
-            object = Donations(id, item[1])
-            object_list.append(object)
-        elif table.value == Table.TREES.value:
-            object = Trees(id, item[1], item[2], item[3])
-            object_list.append(object)
-    dbexit()
-    return object_list
 
 def read_table(table, base, order):
     dbenter()
@@ -69,24 +52,32 @@ def read_table(table, base, order):
     for item in list:
         print(item)
     dbexit()
-    insert_to_class(table)
 
 def del_table(table):
     dbenter()
     c.execute(f"DROP TABLE {table.value}")
     dbexit()
-    insert_to_class(table)
+    
 
-def insert_data(table, donor_id=None, email="", password="", money=0, tree_species="", tree_species_quantity=0):
+def insert_data(table, email="", password="", money=0, tree_species="", tree_species_quantity=0):
+    id = rand_num_gen()
     dbenter()
     if table.value == Table.ACCOUNTS.value:
-        c.execute(f"INSERT INTO {table.value} VALUES (?, ?, ?)", (donor_id, email, password))
+        object = Accounts(id) 
+        object.email = email
+        object.password = password
+        c.execute(f"INSERT INTO {table.value} VALUES (?, ?, ?)", (id, object.email, object.password))
     elif table.value == Table.DONATIONS.value:
-        c.execute(f"INSERT INTO {table.value} VALUES (?, ?)", (donor_id, money))
+        object = Donations(id) 
+        object.money = money
+        c.execute(f"INSERT INTO {table.value} VALUES (?, ?)", (id, object.money))
     elif table.value == Table.TREES.value:
-        c.execute(f"INSERT INTO {table.value} VALUES (?, ?, ?, ?)", (donor_id, money, tree_species, tree_species_quantity))
+        object = Trees(id)
+        object.money = money
+        object.species = tree_species
+        object.quantity = tree_species_quantity
+        c.execute(f"INSERT INTO {table.value} VALUES (?, ?, ?, ?)", (id, object.money, object.species, object.species_quantity))
     dbexit()
-    insert_to_class(table)
 
 def find_data(table, donor_id):
     dbenter()
@@ -111,25 +102,22 @@ def find_data(table, donor_id):
         else:
             print(f"Row not found in {table.value}")
     dbexit()
-    insert_to_class(table)
 
 def alter_data(table, donor_id, column, value):
     dbenter()
     c.execute(f"UPDATE {table.value} SET {column.value} = '{value}' WHERE donor_id = {donor_id}")
     dbexit()
-    insert_to_class(table)
     
-def del_data(table, donor_id):
+def del_row(table, donor_id):
     dbenter()
     c.execute(f"DELETE FROM {table.value} WHERE donor_id = {donor_id}")
     dbexit()
-    insert_to_class(table)
     
 def rand_num_gen():
     rand_num = random.randint(0, 9999)
     dbenter()
     while True:
-        c.execute(f"SELECT donor_id FROM accounts WHERE donor_id = ?", (rand_num,))
+        c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.ID.value} = ?", (rand_num,))
         result = c.fetchone()
         if result is None:
             break  
@@ -137,25 +125,19 @@ def rand_num_gen():
     dbexit()
     return rand_num
     
-    
-    
-# // When called, it provides a random number for the unique ID of databases
-#     public int randNumGen(String dbName, String dbId) {
-#         Random random = new Random();
-#         int randNum = random.nextInt(9999);
-#          try {
-#             stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-#                     ResultSet.CONCUR_UPDATABLE);
-#             rs = stmt.executeQuery("SELECT " + dbId.toUpperCase() + " FROM " + dbName.toUpperCase() + " WHERE " + dbId.toUpperCase() + "="+randNum);
-#             while (rs.next()) {
-#                 randNum = random.nextInt(9999);
-#                 rs = stmt.executeQuery("SELECT " + dbId.toUpperCase() + " FROM " + dbName.toUpperCase() + " WHERE " + dbId.toUpperCase() + "="+ randNum);
-#             }
-#             refreshRsStmt("accounts");
-#         } 
-#         catch (SQLException err) 
-#         {
-#             System.out.println(err.getMessage());
-#         }
-#         return randNum;
-#     }
+def verify(email, password):
+    dbenter()
+    c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.EMAIL.value} = ?", (email,))
+    result = c.fetchone()
+    if result:
+        c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.PASSWORD.value} = ?", (password,))
+        if c.fetchone():
+            current_user = result[0] 
+            dbexit()
+            return "0", current_user
+        else:
+            dbexit()
+            return "1", None
+    else:
+        dbexit()
+        return "2", None
