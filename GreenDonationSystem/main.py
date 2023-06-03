@@ -6,10 +6,10 @@ Accounts.init_db()
 # Accounts.insert_data(account)
 
 
-print(Accounts.find_data(2587))
+print(Accounts.read_row(2587))
 
 account = Accounts()
-account.alter_data(2587, AccColumn.PASSWORD, "oh no")
+account.alter_row(2587, AccColumn.PASSWORD, "oh no n oon ono nn")
 
-print(Accounts.find_data(2587))
+print(Accounts.read_row(2587))
 

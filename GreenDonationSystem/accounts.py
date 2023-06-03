@@ -20,7 +20,7 @@ class Accounts:
             c = conn.cursor()
             rand_num = random.randint(0, 9999)
             while True:
-                c.execute(f"SELECT * FROM {Table.value} WHERE {AccColumn.ID.value} = ?", (rand_num,))
+                c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.ID.value} = ?", (rand_num,))
                 result = c.fetchone()
                 if result is None:
                     break  
@@ -31,10 +31,10 @@ class Accounts:
     def verify_account(email, password):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
-            c.execute(f"SELECT * FROM {Table.value} WHERE {AccColumn.EMAIL.value} = ?", (email,))
+            c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.EMAIL.value} = ?", (email,))
             result = c.fetchone()
             if result:
-                c.execute(f"SELECT * FROM {Table.value} WHERE {AccColumn.PASSWORD.value} = ?", (password,))
+                c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.PASSWORD.value} = ?", (password,))
                 if c.fetchone():
                     current_user = result[0] 
                     return "0", current_user
@@ -45,10 +45,10 @@ class Accounts:
                 return "2", None
         
     @staticmethod
-    def find_data(donor_id):
+    def read_row(donor_id):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
-            c.execute(f"SELECT * FROM {Table.value} WHERE donor_id = ?", (donor_id,))
+            c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE donor_id = ?", (donor_id,))
             row = c.fetchone()
             if row:
                 accounts = Accounts(row[0], row[1], row[2])
@@ -60,14 +60,14 @@ class Accounts:
     def del_row(donor_id):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
-            c.execute(f"DELETE FROM {Table.value} WHERE donor_id = {donor_id}")
+            c.execute(f"DELETE FROM {Table.ACCOUNTS.value} WHERE donor_id = {donor_id}")
         
     
     @staticmethod
     def read_table(base, order):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
-            list = c.execute(f"SELECT * FROM {Table.value} ORDER BY {base.value} {order.value}")
+            list = c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} ORDER BY {base.value} {order.value}")
             for item in list:
                 print(item)
         
@@ -75,7 +75,7 @@ class Accounts:
     def del_table():
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
-            c.execute(f"DROP TABLE {Table.value}")
+            c.execute(f"DROP TABLE {Table.ACCOUNTS.value}")
         
         
     def __init__(self, donor_id=None, email="", password=""):
@@ -110,15 +110,15 @@ class Accounts:
     def password(self, value):
         self.__password = value  
     
-    def insert_data(self):
+    def create_eow(self):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
-            c.execute(f"INSERT INTO {Table.value} VALUES (?, ?, ?)", (self.donor_id, self.email, self.password))   
+            c.execute(f"INSERT INTO {Table.ACCOUNTS.value} VALUES (?, ?, ?)", (self.donor_id, self.email, self.password))   
             
-    def alter_data(self, donor_id, column, value):
+    def alter_row(self, donor_id, column, value):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor() 
             setattr(self, column.value, value)
-            c.execute(f"UPDATE {Table.value} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
+            c.execute(f"UPDATE {Table.ACCOUNTS.value} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
             
         
