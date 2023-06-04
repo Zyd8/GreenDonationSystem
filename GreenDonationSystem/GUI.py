@@ -1,5 +1,6 @@
 import tkinter as tk
 from accounts import Accounts 
+from trees import Trees
 from enums import *
 
 Accounts.init_db()
@@ -13,6 +14,7 @@ def confirm_button_clicked():
         label = tk.Label(root, text="Welcome!!", font=("Monospace", 12))
         label.pack(padx=20, pady=20)
         current_user = id
+        Accounts.read_row(current_user)
         return
     elif signal == "1":
         label = tk.Label(root, text="Wrong password", font=("Monospace", 12))

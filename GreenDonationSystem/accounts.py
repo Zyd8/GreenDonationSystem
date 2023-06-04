@@ -4,13 +4,11 @@ from enums import *
 
 class Accounts:
     
-    # unique
     def create_row(self):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
             c.execute(f"INSERT INTO {Table.ACCOUNTS.value} VALUES (?, ?, ?)", (self.donor_id, self.email, self.password))   
             
-    # unique   
     @staticmethod
     def rand_num_gen():
         with sqlite3.connect("GreenDonation.db") as conn:
@@ -24,7 +22,6 @@ class Accounts:
                 rand_num = random.randint(0, 9999)
             return rand_num
     
-    # unique
     @staticmethod
     def verify_account(email, password):
         with sqlite3.connect("GreenDonation.db") as conn:
@@ -42,7 +39,6 @@ class Accounts:
 
                 return "2", None
     
-    # overriden
     @staticmethod
     def init_db():
         with sqlite3.connect("GreenDonation.db") as conn:
@@ -52,8 +48,7 @@ class Accounts:
                         email text,
                         password text
                     )""")
-    
-    # overriden 
+
     @staticmethod
     def read_row(donor_id):
         with sqlite3.connect("GreenDonation.db") as conn:
@@ -62,17 +57,15 @@ class Accounts:
             row = c.fetchone()
             if row:
                 object = Accounts(row[0], row[1], row[2])
-                return object
+                return print(object)
             print("Record not found")
-            
-    # overriden
+
     @staticmethod
     def del_row(donor_id):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
             c.execute(f"DELETE FROM {Table.ACCOUNTS.value} WHERE donor_id = {donor_id}")
-        
-    # overriden
+
     @staticmethod
     def read_table(base, order):
         with sqlite3.connect("GreenDonation.db") as conn:
@@ -81,14 +74,12 @@ class Accounts:
             for item in list:
                 print(item)
     
-    # overriden    
     @staticmethod
     def del_table():
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
             c.execute(f"DROP TABLE {Table.ACCOUNTS.value}")
             
-    # overriden
     def alter_row(self, donor_id, column, value):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor() 

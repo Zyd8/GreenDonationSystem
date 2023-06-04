@@ -1,6 +1,5 @@
 import sqlite3
 from enums import *
-from accounts import Accounts
 
 class Donations():
 
@@ -9,7 +8,17 @@ class Donations():
     # unique
     @staticmethod
     def get_total_money():
-        return print(Donations.total_money)
+        with sqlite3.connect("GreenDonation.db") as conn:
+            c = conn.cursor()
+            c.execute(f"SELECT {TreColumn.MONEY.value} FROM {Table.DONATIONS.value}")
+            donation_results = c.fetchall()
+            c.execute(f"SELECT {TreColumn.MONEY.value} FROM {Table.TREES.value}")
+            tree_results = c.fetchall()
+            for row in donation_results:
+                Donations.total_money += row[0]
+            for row in tree_results:
+                Donations.total_money += row[0]
+        print(Donations.total_money)
     
     # unique
     @staticmethod
@@ -74,7 +83,6 @@ class Donations():
     def __init__(self, donor_id=None, money=0):
         self.__donor_id = donor_id
         self.__money = money
-        Donations.total_money += money
 
     def __repr__(self):
         return f"Donations(donor_id={self.donor_id}, money={self.money})"

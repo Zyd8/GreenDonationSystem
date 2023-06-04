@@ -9,7 +9,7 @@ class Trees(Donations):
     def extend_row(current_user):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
-            c.execute(f"INSERT INTO {Table.TREES.value} VALUES (?, NULL)", (current_user,))
+            c.execute(f"INSERT INTO {Table.TREES.value} VALUES (?, NULL, NULL, NULL)", (current_user,))
             
     # overriden
     @staticmethod
@@ -66,29 +66,29 @@ class Trees(Donations):
             c.execute(f"UPDATE {Table.TREES.value} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
 
     
-    def __init__(self, donation_id=None, money=0, species="", quantity=0):
+    def __init__(self, donation_id=None, money=0, tree_species="", tree_species_quantity=0):
         super().__init__(donation_id, money)
-        self.__species = species
-        self.__quantity = quantity
+        self.__tree_species = tree_species
+        self.__tree_species_quantity = tree_species_quantity
 
     def __repr__(self):
-        return f"Trees(donation_id={self.donation_id}, money={self.money}, tree_species={self.species}, tree_species_quantity={self.quantity})"
+        return f"Trees(donation_id={self.donation_id}, money={self.money}, tree_species={self.tree_species}, tree_species_quantity={self.tree_species_quantity})"
 
     @property 
-    def species(self):
-        return self.__species
+    def tree_species(self):
+        return self.__tree_species
     
-    @species.setter
-    def species(self, value):
-        self.__species = value
+    @tree_species.setter
+    def tree_species(self, value):
+        self.__tree_species = value
 
     @property 
-    def quantity(self):
-        return self.__quantity
+    def tree_species_quantity(self):
+        return self.__tree_species_quantity
     
-    @quantity.setter
-    def quantity(self, value):
-        self.__quantity = value
+    @tree_species_quantity.setter
+    def tree_species_quantity(self, value):
+        self.__tree_species_quantity = value
 
 
     
