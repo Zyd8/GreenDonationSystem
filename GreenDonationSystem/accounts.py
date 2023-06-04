@@ -9,8 +9,6 @@ class Accounts:
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
             c.execute(f"INSERT INTO {Table.ACCOUNTS.value} VALUES (?, ?, ?)", (self.donor_id, self.email, self.password))   
-            c.execute(f"INSERT INTO {Table.DONATIONS.value} VALUES (?, NULL)", (self.donor_id,))
-            c.execute(f"INSERT INTO {Table.TREES.value} VALUES (?, NULL, NULL, NULL)", (self.donor_id,))
             
     # unique   
     @staticmethod
