@@ -4,16 +4,15 @@ from enums import *
 
 class Accounts:
     
-    @staticmethod
-    def init_db():
+    # unique
+    def create_row(self):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
-            c.execute("""CREATE TABLE IF NOT EXISTS accounts (
-                        donor_id INTEGER PRIMARY KEY,
-                        email text,
-                        password text
-                    )""")
-        
+            c.execute(f"INSERT INTO {Table.ACCOUNTS.value} VALUES (?, ?, ?)", (self.donor_id, self.email, self.password))   
+            c.execute(f"INSERT INTO {Table.DONATIONS.value} VALUES (?, NULL)", (self.donor_id,))
+            c.execute(f"INSERT INTO {Table.TREES.value} VALUES (?, NULL, NULL, NULL)", (self.donor_id,))
+            
+    # unique   
     @staticmethod
     def rand_num_gen():
         with sqlite3.connect("GreenDonation.db") as conn:
@@ -27,6 +26,7 @@ class Accounts:
                 rand_num = random.randint(0, 9999)
             return rand_num
     
+    # unique
     @staticmethod
     def verify_account(email, password):
         with sqlite3.connect("GreenDonation.db") as conn:
@@ -43,7 +43,19 @@ class Accounts:
             else:
 
                 return "2", None
-        
+    
+    # overriden
+    @staticmethod
+    def init_db():
+        with sqlite3.connect("GreenDonation.db") as conn:
+            c = conn.cursor()
+            c.execute("""CREATE TABLE IF NOT EXISTS accounts (
+                        donor_id INTEGER PRIMARY KEY,
+                        email text,
+                        password text
+                    )""")
+    
+    # overriden 
     @staticmethod
     def read_row(donor_id):
         with sqlite3.connect("GreenDonation.db") as conn:
@@ -51,18 +63,18 @@ class Accounts:
             c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE donor_id = ?", (donor_id,))
             row = c.fetchone()
             if row:
-                accounts = Accounts(row[0], row[1], row[2])
-                return accounts
+                object = Accounts(row[0], row[1], row[2])
+                return object
             print("Record not found")
             
-    
+    # overriden
     @staticmethod
     def del_row(donor_id):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
             c.execute(f"DELETE FROM {Table.ACCOUNTS.value} WHERE donor_id = {donor_id}")
         
-    
+    # overriden
     @staticmethod
     def read_table(base, order):
         with sqlite3.connect("GreenDonation.db") as conn:
@@ -70,12 +82,20 @@ class Accounts:
             list = c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} ORDER BY {base.value} {order.value}")
             for item in list:
                 print(item)
-        
+    
+    # overriden    
     @staticmethod
     def del_table():
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
             c.execute(f"DROP TABLE {Table.ACCOUNTS.value}")
+            
+    # overriden
+    def alter_row(self, donor_id, column, value):
+        with sqlite3.connect("GreenDonation.db") as conn:
+            c = conn.cursor() 
+            setattr(self, column.value, value)
+            c.execute(f"UPDATE {Table.ACCOUNTS.value} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
         
         
     def __init__(self, donor_id=None, email="", password=""):
@@ -109,16 +129,4 @@ class Accounts:
     @password.setter
     def password(self, value):
         self.__password = value  
-    
-    def create_eow(self):
-        with sqlite3.connect("GreenDonation.db") as conn:
-            c = conn.cursor()
-            c.execute(f"INSERT INTO {Table.ACCOUNTS.value} VALUES (?, ?, ?)", (self.donor_id, self.email, self.password))   
-            
-    def alter_row(self, donor_id, column, value):
-        with sqlite3.connect("GreenDonation.db") as conn:
-            c = conn.cursor() 
-            setattr(self, column.value, value)
-            c.execute(f"UPDATE {Table.ACCOUNTS.value} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
-            
         
