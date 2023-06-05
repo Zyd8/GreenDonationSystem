@@ -24,3 +24,6 @@ class Order(Enum):
     ASCEND = "ASC"
     DESCEND = "DESC"
     ID = "donor_id"
+    
+class Signal(Enum):
+    pass
