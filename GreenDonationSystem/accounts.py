@@ -8,36 +8,6 @@ class Accounts:
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
             c.execute(f"INSERT INTO {Table.ACCOUNTS.value} VALUES (?, ?, ?)", (self.donor_id, self.email, self.password))   
-            
-    @staticmethod
-    def rand_num_gen():
-        with sqlite3.connect("GreenDonation.db") as conn:
-            c = conn.cursor()
-            rand_num = random.randint(0, 9999)
-            while True:
-                c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.ID.value} = ?", (rand_num,))
-                result = c.fetchone()
-                if result is None:
-                    break  
-                rand_num = random.randint(0, 9999)
-            return rand_num
-    
-    @staticmethod
-    def verify_account(email, password):
-        with sqlite3.connect("GreenDonation.db") as conn:
-            c = conn.cursor()
-            c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.EMAIL.value} = ?", (email,))
-            result = c.fetchone()
-            if result:
-                c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.PASSWORD.value} = ?", (password,))
-                if c.fetchone():
-                    current_user = result[0] 
-                    return "0", current_user
-                else:
-                    return "1", None
-            else:
-
-                return "2", None
     
     @staticmethod
     def init_db():
@@ -85,7 +55,42 @@ class Accounts:
             c = conn.cursor() 
             setattr(self, column.value, value)
             c.execute(f"UPDATE {Table.ACCOUNTS.value} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
-        
+    
+    @staticmethod
+    def rand_num_gen():
+        with sqlite3.connect("GreenDonation.db") as conn:
+            c = conn.cursor()
+            rand_num = random.randint(0, 9999)
+            while True:
+                c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.ID.value} = ?", (rand_num,))
+                result = c.fetchone()
+                if result is None:
+                    break  
+                rand_num = random.randint(0, 9999)
+            return rand_num
+    
+    @staticmethod
+    def verify_account(email, password):
+        with sqlite3.connect("GreenDonation.db") as conn:
+            c = conn.cursor()
+            c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.EMAIL.value} = ?", (email,))
+            result = c.fetchone()
+            if result:
+                c.execute(f"SELECT * FROM {Table.ACCOUNTS.value} WHERE {AccColumn.PASSWORD.value} = ?", (password,))
+                if c.fetchone():
+                    current_user = result[0] 
+                    return "0", current_user
+                else:
+                    return "1", None
+            else:
+
+                return "2", None    
+    
+    @staticmethod
+    def pass_align(pass1, pass2):
+        if pass1.get() != pass2.get():
+            return True
+            
         
     def __init__(self, donor_id=None, email="", password=""):
         self.__donor_id = donor_id
