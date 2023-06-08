@@ -142,7 +142,7 @@ def window_donor_base():
     gui = GUI_manager()
     
     def handle_general_btn():
-        gui.destroy
+        gui.destroy()
         window_general_base()
     
     def handle_trees_btn():
@@ -174,8 +174,7 @@ def window_general_base():
     gui = GUI_manager()   
     
     def confirm_btn_click():
-        object = Donations()
-        Donations.alter_row(object, current_user, DonColumn.MONEY, int(ent_money.get()))
+        Donations.alter_row(current_user, DonColumn.MONEY, int(ent_money.get()))
     
     def handle_confirm_btn():
         confirm_btn_click()

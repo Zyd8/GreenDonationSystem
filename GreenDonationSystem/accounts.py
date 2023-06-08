@@ -50,10 +50,11 @@ class Accounts:
             c = conn.cursor()
             c.execute(f"DROP TABLE {Table.ACCOUNTS.value}")
             
-    def alter_row(self, donor_id, column, value):
+    @classmethod
+    def alter_row(cls, donor_id, column, value):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor() 
-            setattr(self, column.value, value)
+            setattr(cls, column.value, value)
             c.execute(f"UPDATE {Table.ACCOUNTS.value} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
     
     @staticmethod

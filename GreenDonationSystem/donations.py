@@ -5,7 +5,7 @@ class Donations():
 
     total_money = 0
     
-    # unique
+    # shared
     @staticmethod
     def get_total_money():
         with sqlite3.connect("GreenDonation.db") as conn:
@@ -23,10 +23,28 @@ class Donations():
     # unique
     @staticmethod
     def extend_row(current_user):
+        if not Donations.row_exists(current_user):
+            with sqlite3.connect("GreenDonation.db") as conn:
+                c = conn.cursor()
+                c.execute(f"INSERT INTO {Table.DONATIONS.value} VALUES (?, NULL)", (current_user,))
+        else:
+            print("Row already exists for donor_id:", current_user)
+            
+    # shared
+    @classmethod
+    def row_exists(cls, current_user):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor()
-            c.execute(f"INSERT INTO {Table.DONATIONS.value} VALUES (?, NULL)", (current_user,))
-    
+            if cls.__name__.lower() == Table.DONATIONS.value:
+                c.execute(f"SELECT {DonColumn.ID.value} FROM {Table.DONATIONS.value} WHERE {DonColumn.ID.value} = ?", (current_user,))
+            elif cls.__name__.lower() == Table.ACCOUNTS.value:
+                c.execute(f"SELECT {TreColumn.ID.value} FROM {Table.TREES.value} WHERE {TreColumn.ID.value} = ?", (current_user,))
+            result = c.fetchone()
+            print(result)
+            if result is None:
+                return False
+            return True
+        
     # overriden
     @staticmethod
     def init_db():
@@ -73,11 +91,13 @@ class Donations():
             c.execute(f"DROP TABLE {Table.DONATIONS.value}")
             
     # overriden
-    def alter_row(self, donor_id, column, value):
+    @classmethod
+    def alter_row(cls, donor_id, column, value):
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor() 
-            setattr(self, column.value, value)
+            setattr(cls, column.value, value)
             c.execute(f"UPDATE {Table.DONATIONS.value} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
+            
 
 
     def __init__(self, donor_id=None, money=0):

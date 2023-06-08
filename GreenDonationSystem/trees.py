@@ -7,9 +7,10 @@ class Trees(Donations):
     #unique
     @staticmethod
     def extend_row(current_user):
-        with sqlite3.connect("GreenDonation.db") as conn:
-            c = conn.cursor()
-            c.execute(f"INSERT INTO {Table.TREES.value} VALUES (?, NULL, NULL, NULL)", (current_user,))
+        if Trees.row_exists(current_user) != True:
+            with sqlite3.connect("GreenDonation.db") as conn:
+                c = conn.cursor()
+                c.execute(f"INSERT INTO {Table.TREES.value} VALUES (?, NULL, NULL, NULL)", (current_user,))
             
     # overriden
     @staticmethod
