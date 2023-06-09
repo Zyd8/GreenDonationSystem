@@ -7,11 +7,13 @@ class Trees(Donations):
     #unique
     @staticmethod
     def extend_row(current_user):
-        if Trees.row_exists(current_user) != True:
+        if not Donations.row_exists(current_user):
             with sqlite3.connect("GreenDonation.db") as conn:
                 c = conn.cursor()
                 c.execute(f"INSERT INTO {Table.TREES.value} VALUES (?, NULL, NULL, NULL)", (current_user,))
-            
+        else:
+            print("Row already exists for donor_id:", current_user)
+
     # overriden
     @staticmethod
     def init_db():
@@ -59,13 +61,6 @@ class Trees(Donations):
             c = conn.cursor()
             c.execute(f"DROP TABLE {Table.TREES.value}")
             
-    # overriden
-    def alter_row(self, donor_id, column, value):
-        with sqlite3.connect("GreenDonation.db") as conn:
-            c = conn.cursor() 
-            setattr(self, column.value, value)
-            c.execute(f"UPDATE {Table.TREES.value} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
-
     
     def __init__(self, donation_id=None, money=0, tree_species="", tree_species_quantity=0):
         super().__init__(donation_id, money)

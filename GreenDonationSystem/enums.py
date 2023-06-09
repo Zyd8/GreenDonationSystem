@@ -13,12 +13,40 @@ class AccColumn(Enum):
 class DonColumn(Enum):
     ID = "donor_id"
     MONEY = "money"
+    TOOLS = "tools"
+    TOOLS_QUANTITY = "tools_quantity"
+    PRODUCTS = "products"
+    PRODUCTS_QUANTITY = "products_quantity"
 
 class TreColumn(Enum):
     ID = "donor_id"
     MONEY = "money"
+    TOOLS = "tools"
+    TOOLS_QUANTITY = "tools_quantity"
+    PRODUCTS = "products"
+    PRODUCTS_QUANTITY = "products_quantity"
+    # fix the enums FIRSTTT
     SPECIES = "tree_species"
     SPECIES_QUANTITY = "tree_species_quantity"
+    
+class OceColumn(Enum):
+    ID = "donor_id"
+    MONEY = "money"
+    TOOLS = "tools"
+    TOOLS_QUANTITY = "tools_quantity"
+    PRODUCTS = "products"
+    PRODUCTS_QUANTITY = "products_quantity"
+
+class Donated(Enum):
+    ID = "donor_id"
+    MONEY = "money"
+    TOOLS = "tools"
+    TOOLS_QUANTITY = "tools_quantity"
+    PRODUCTS = "products"
+    PRODUCTS_QUANTITY = "products_quantity"
+    SPECIES = "tree_species"
+    SPECIES_QUANTITY = "tree_species_quantity"
+    
 
 class Order(Enum):
     ASCEND = "ASC"
@@ -27,3 +55,7 @@ class Order(Enum):
     
 class Signal(Enum):
     pass
+
+# ONCE THERE IS A DONATION, IT WILL BE STORED IN ANOTHER TABLE CALLED DONATED 
+# TABLE WHICH WILL STORE THE DONOR_ID TO A NON-PRIMARY KEY COLUMN. ONCE MOVED,
+# THE ROW OF THE DONOR_ID WILL BE DELETED EITHER THE DONATIONS, TREES, OCEANS.

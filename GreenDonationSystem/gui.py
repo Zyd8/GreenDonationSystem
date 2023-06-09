@@ -33,10 +33,9 @@ current_user = None
 def window_sign_in():
     gui = GUI_manager()
     
-    label = tk.Label(gui.root)
     def confirm_btn_click():
-        label.pack_forget()
-        signal, id = Accounts.verify_account(ent_email.get(), ent_pass.get())
+        label.config(text="")
+        signal, id = Accounts.verify_account(ent_email.get().strip(), ent_pass.get().strip())
         if signal == "0":
             label.configure(text="Welcome!!")
             label.pack(padx=20, pady=20)
@@ -81,6 +80,9 @@ def window_sign_in():
     sign_up_btn = tk.Button(gui.root, text="Sign up?", font=("Monospace", 12), command=handle_window_sign_up)
     sign_up_btn.pack(padx=100, pady=20)
     
+    label = tk.Label(gui.root, fg="red")
+    label.pack(padx=20, pady=20)
+    
     gui.start()
     
 
@@ -88,21 +90,21 @@ def window_sign_up():
     gui = GUI_manager()
     
     def create_account_btn():
-        label_error.config(text="")
+        label.config(text="")
         
         entry_widgets = get_widgets(gui.root, tk.Entry)
         for entry in entry_widgets:
             if entry.get() == "":
-                label_error.configure(text="Must satisfy all fields")
+                label.configure(text="Must satisfy all fields")
                 return
 
         if Accounts.pass_align(ent_pass, ent_conf_pass):
-            label_error.configure(text="Password did not match")
+            label.configure(text="Password did not match")
             return
         
-        object = Accounts(Accounts.rand_num_gen(), ent_email.get(), ent_pass.get())
+        object = Accounts(Accounts.rand_num_gen(), ent_email.get().strip(), ent_pass.get().strip())
         object.create_row()
-        label_error.configure(text="Successfully created the account")
+        label.configure(text="Successfully created the account")
         return True
             
     def handle_create_account_btn():
@@ -132,8 +134,8 @@ def window_sign_up():
     back_btn = tk.Button(gui.root, text="Back", font=("Monospace", 12), command=handle_back_btn)
     back_btn.pack(padx=20, pady=20)
     
-    label_error = tk.Label(gui.root, fg="red")
-    label_error.pack(padx=20, pady=20)
+    label = tk.Label(gui.root, fg="red")
+    label.pack(padx=20, pady=20)
 
     gui.start()
     
@@ -146,7 +148,8 @@ def window_donor_base():
         window_general_base()
     
     def handle_trees_btn():
-        pass
+        gui.destroy()
+        window_trees_base()
     
     def handle_ocean_btn():
         pass
@@ -156,9 +159,9 @@ def window_donor_base():
     
     # always make the tkinter component always be the abrreviated prefix. example btn_trees
 
-    general_btn = tk.Button(btn_frame, text="General", font=("Monospace", 12), command=handle_general_btn)
-    trees_btn = tk.Button(btn_frame, text="Trees", font=("Monospace", 12), command=handle_trees_btn)
-    ocean_btn = tk.Button(btn_frame, text="Ocean", font=("Monospace", 12), command=handle_ocean_btn)
+    general_btn = tk.Button(btn_frame, text="General", font=("Monospace", 12), command=handle_general_btn, width=10, height=2)
+    trees_btn = tk.Button(btn_frame, text="Trees", font=("Monospace", 12), command=handle_trees_btn, width=10, height=2)
+    ocean_btn = tk.Button(btn_frame, text="Ocean", font=("Monospace", 12), command=handle_ocean_btn, width=10, height=2)
 
     general_btn.grid(row=0, column=0, padx=10, pady=10)
     trees_btn.grid(row=0, column=1, padx=10, pady=10)
@@ -174,6 +177,14 @@ def window_general_base():
     gui = GUI_manager()   
     
     def confirm_btn_click():
+        label.config(text="")
+        
+        entry_widgets = get_widgets(ent_frame, tk.Entry)
+        for entry in entry_widgets:
+            if entry.get() == "":
+                label.configure(text="Must satisfy all fields")
+                return
+            
         Donations.alter_row(current_user, DonColumn.MONEY, int(ent_money.get()))
     
     def handle_confirm_btn():
@@ -182,22 +193,54 @@ def window_general_base():
     ent_frame = tk.Frame(gui.root)
     ent_frame.pack(padx=20, pady=20)
     
-    ent_money = tk.Entry(gui.root)
+    ent_money = tk.Entry(ent_frame)
     ent_money.pack(padx=10, pady=10)
+    
+    ent_money.grid(row=0, column=0, padx=10, pady=10)
+    
+    confirm_btn = tk.Button(gui.root, text="Confirm", font=("Monospace", 12), command=handle_confirm_btn)
+    confirm_btn.pack(padx=20, pady=20)
+    
+    label = tk.Label(gui.root, fg="red")
+    label.pack(padx=20, pady=20)
+    
+    gui.start()
+    
+
+def window_trees_base():
+    Trees.extend_row(current_user) 
+    
+    gui = GUI_manager()   
+    
+    def confirm_btn_click():
+
+            
+        Trees.alter_row(current_user, TreColumn.MONEY, int(ent_money.get()))
+        Trees.alter_row(current_user, TreColumn.SPECIES, str(ent_tree_species.get()))
+        Trees.alter_row(current_user, TreColumn.SPECIES_QUANTITY, int(ent_tree_species_quantity.get()))
+    
+    def handle_confirm_btn():
+        confirm_btn_click()
+    
+    ent_frame = tk.Frame(gui.root)
+    ent_frame.pack(padx=20, pady=20)
+    
+    ent_money = tk.Entry(ent_frame)
+    ent_money.grid(row=0, column=0, padx=10, pady=10)
+    
+    ent_tree_species = tk.Entry(ent_frame)
+    ent_tree_species.grid(row=0, column=1, padx=10, pady=10)
+    
+    ent_tree_species_quantity = tk.Entry(ent_frame)
+    ent_tree_species_quantity.grid(row=0, column=2, padx=10, pady=10)
     
     confirm_btn = tk.Button(gui.root, text="Confirm", font=("Monospace", 12), command=handle_confirm_btn)
     confirm_btn.pack(padx=20, pady=20)
     
     gui.start()
-    
-
-
-def window_trees_base():
-    pass
 
 def window_ocean_base():
     pass
 
-    
 window_sign_in()
 

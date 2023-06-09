@@ -40,7 +40,6 @@ class Donations():
             elif cls.__name__.lower() == Table.ACCOUNTS.value:
                 c.execute(f"SELECT {TreColumn.ID.value} FROM {Table.TREES.value} WHERE {TreColumn.ID.value} = ?", (current_user,))
             result = c.fetchone()
-            print(result)
             if result is None:
                 return False
             return True
@@ -96,7 +95,7 @@ class Donations():
         with sqlite3.connect("GreenDonation.db") as conn:
             c = conn.cursor() 
             setattr(cls, column.value, value)
-            c.execute(f"UPDATE {Table.DONATIONS.value} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
+            c.execute(f"UPDATE {cls.__name__.lower()} SET {column.value} = ? WHERE donor_id = ?", (value, donor_id))
             
 
 
